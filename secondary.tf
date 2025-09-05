@@ -40,9 +40,6 @@ module "s3_secondary" {
   source        = "./modules/s3"
   providers     = { aws = aws.dr }
   name_prefix   = "secondary"
-  bucket_name = "project-secondary-bucket"
-  # 'region' variable is optional; provider mapping above controls region
   region      = "us-west-1"
-  
 }
 
