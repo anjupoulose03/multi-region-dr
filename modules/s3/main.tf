@@ -60,7 +60,7 @@ resource "aws_s3_bucket_replication_configuration" "this" {
     }
 
     destination {
-      bucket        = arn:aws:s3:::project-secondary-bucket
+      bucket        = "arn:aws:s3:::project-secondary-bucket"
       storage_class = "STANDARD"
     }
   }
