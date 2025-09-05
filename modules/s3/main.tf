@@ -39,7 +39,12 @@ resource "aws_s3_bucket_versioning" "this" {
     status = "Enabled"
   }
 }
-
+locals {
+  do_replication = (
+    var.replication_arn != null && var.replication_arn != "" &&
+    var.replication_role_arn != null && var.replication_role_arn != ""
+  )
+}
 resource "aws_s3_bucket_replication_configuration" "this" {
   bucket = aws_s3_bucket.this.id
   role   = "arn:aws:iam::654654409772:role/s3-replication-role" # Replace
@@ -53,7 +58,7 @@ resource "aws_s3_bucket_replication_configuration" "this" {
     }
 
     destination {
-      bucket        = var.replication_arn
+      bucket        = arn:aws:s3:::project-secondary-bucket
       storage_class = "STANDARD"
     }
   }
