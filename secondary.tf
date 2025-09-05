@@ -41,6 +41,6 @@ module "s3_secondary" {
   providers     = { aws = aws.dr }
   name_prefix   = "secondary"
   region      = "us-west-1"
-  replication_arn = "arn:aws:s3:::primary-region-bucket"
+  # replication_arn = "arn:aws:s3:::primary-region-bucket"
 }
 
