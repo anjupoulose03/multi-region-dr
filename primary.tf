@@ -35,10 +35,8 @@ module "rds" {
 module "s3" {
   source          = "./modules/s3"
   name_prefix     = "primary"
-  bucket_name     = "project-primary-bucket"
-  replication_arn = "arn:aws:s3:::project-secondary-bucket"
   region          = "us-east-2"
-  replication_role_arn = "arn:aws:iam::334712111310:role/s3-replicationrole"  # Replace with valid IAM role ARN
+  replication_arn = "arn:aws:iam::334712111310:role/s3-replicationrole"  # Replace with valid IAM role ARN
 }
 
 # Route53 DNS Failover
