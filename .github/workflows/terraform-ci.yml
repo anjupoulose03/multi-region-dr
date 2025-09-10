@@ -3,16 +3,8 @@ name: Terraform CI
 on:
   pull_request:
     branches: [ main ]
-    paths:
-      - '**/*.tf'
-      - '**/*.tfvars'
-      - '.github/workflows/terraform-*.yml'
   push:
     branches: [ main ]
-    paths:
-      - '**/*.tf'
-      - '**/*.tfvars'
-      - '.github/workflows/terraform-*.yml'
 
 permissions:
   contents: read
@@ -32,13 +24,16 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          # match the version set in your TFC workspace Settings → General
           terraform_version: 1.13.1
           # writes credentials.tfrc.json so CLI can talk to Terraform Cloud
           cli_config_credentials_token: ${{ secrets.TF_TOKEN_app_terraform_io }}
 
       - name: Show Terraform version
         run: terraform version
+
+      # ✅ installs local modules/providers without touching your remote backend
+      - name: Terraform Init (backendless for validate)
+        run: terraform init -backend=false -input=false
 
       - name: Terraform Fmt (auto-fix)
         run: terraform fmt -recursive
@@ -47,12 +42,13 @@ jobs:
         run: terraform fmt -check -recursive
 
       - name: Terraform Validate
-        run: terraform validate
+        run: terraform validate -no-color
 
-      # remote backend points to your TFC org/workspace (backend.tf)
+      # real init against your Terraform Cloud remote backend
       - name: Terraform Init (remote backend)
         run: terraform init -input=false
 
-      # this triggers a remote plan in Terraform Cloud (manual apply in TFC)
+      # runs remotely in Terraform Cloud; you'll confirm Apply in TFC
       - name: Terraform Plan (remote in TFC)
         run: terraform plan -no-color -input=false
+
