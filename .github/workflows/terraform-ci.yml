@@ -25,13 +25,13 @@ jobs:
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.13.1
-          # writes credentials.tfrc.json so CLI can talk to Terraform Cloud
+          # writes ~/.terraform.d/credentials.tfrc.json for TFC
           cli_config_credentials_token: ${{ secrets.TF_TOKEN_app_terraform_io }}
 
       - name: Show Terraform version
         run: terraform version
 
-      # ✅ installs local modules/providers without touching your remote backend
+      # Install local modules/providers so 'validate' works without contacting TFC
       - name: Terraform Init (backendless for validate)
         run: terraform init -backend=false -input=false
 
@@ -44,11 +44,14 @@ jobs:
       - name: Terraform Validate
         run: terraform validate -no-color
 
-      # real init against your Terraform Cloud remote backend
+      # REAL init against your Terraform Cloud remote backend
       - name: Terraform Init (remote backend)
+        env:
+          TF_TOKEN_app_terraform_io: ${{ secrets.TF_TOKEN_app_terraform_io }}
         run: terraform init -input=false
 
-      # runs remotely in Terraform Cloud; you'll confirm Apply in TFC
+      # Triggers the remote plan in TFC (you'll Confirm & Apply in TFC)
       - name: Terraform Plan (remote in TFC)
+        env:
+          TF_TOKEN_app_terraform_io: ${{ secrets.TF_TOKEN_app_terraform_io }}
         run: terraform plan -no-color -input=false
-
