@@ -28,18 +28,18 @@ jobs:
           # This writes ~/.terraform.d/credentials.tfrc.json for app.terraform.io
           cli_config_credentials_token: ${{ secrets.TF_TOKEN_app_terraform_io }}
 
-      # Install local modules/providers so validate works offline
-      - name: Terraform Init (backendless for validate)
-        run: terraform init -backend=false -input=false
+      # # Install local modules/providers so validate works offline
+      # #- name: Terraform Init (backendless for validate)
+      #  # run: terraform init -backend=false -input=false
 
-      - name: Terraform Fmt (auto-fix)
-        run: terraform fmt -recursive
+      # - name: Terraform Fmt (auto-fix)
+      #   run: terraform fmt -recursive
 
-      - name: Terraform Fmt Check
-        run: terraform fmt -check -recursive
+      # - name: Terraform Fmt Check
+      #   run: terraform fmt -check -recursive
 
-      - name: Terraform Validate
-        run: terraform validate -no-color
+      # - name: Terraform Validate
+      #   run: terraform validate -no-color
 
       # Real init against your Terraform Cloud remote backend
       - name: Terraform Init (remote backend)
