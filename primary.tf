@@ -34,10 +34,18 @@ module "rds" {
 # S3 with Cross-Region Replication
 module "s3" {
   source          = "./modules/s3"
-  name_prefix     = "primary"
+  name_prefix     = "primary-${var.app_id}"
   region          = "us-east-2"
-  replication_arn = "arn:aws:iam::334712111310:role/s3-replicationrole"  # Replace with valid IAM role ARN
+  enable_replication = true
+  replication_destination_bucket_arn = module.s3_secondary.bucket_arn
+  replication_role_arn               = "arn:aws:iam::334712111310:role/s3-replicationrole"  # your role
+
+  tags = { Environment = "prod" }
+  # ensure the entire secondary module (incl. versioning) is ready first
+  depends_on = [ module.s3_secondary ]
 }
+
+
 
 # Route53 DNS Failover
 module "route53" {
