@@ -37,10 +37,11 @@ module "rds_secondary" {
 }
 
 module "s3_secondary" {
-  source        = "./modules/s3"
-  providers     = { aws = aws.dr }
-  name_prefix   = "secondary"
+  source      = "./modules/s3"
+  providers   = { aws = aws.dr }               # your secondary provider
+  name_prefix = "secondary-${var.app_id}"
   region      = "us-west-1"
-  # replication_arn = "arn:aws:s3:::primary-region-bucket"
-}
+  enable_replication = false
 
+  tags = { Environment = "dr" }
+}
